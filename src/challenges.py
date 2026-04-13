@@ -44,6 +44,8 @@ class DoublyLinkedList:
         self.tail: DLLNode | None = None
 
 
+# ---------------- SLL FUNCTIONS ---------------- #
+
 def build_sll_from_list(values: list[int]) -> SinglyLinkedList:
     sll = SinglyLinkedList()
 
@@ -84,6 +86,8 @@ def find_first_repeat_sll(sll: SinglyLinkedList) -> int | None:
     return None
 
 
+# ---------------- DLL FUNCTIONS ---------------- #
+
 def remove_all_from_dll(dll: DoublyLinkedList, target: int) -> None:
     current = dll.head
 
@@ -91,11 +95,13 @@ def remove_all_from_dll(dll: DoublyLinkedList, target: int) -> None:
         next_node = current.next
 
         if current.value == target:
+            # Fix previous link
             if current.prev:
                 current.prev.next = current.next
             else:
                 dll.head = current.next
 
+            # Fix next link
             if current.next:
                 current.next.prev = current.prev
             else:
@@ -103,14 +109,23 @@ def remove_all_from_dll(dll: DoublyLinkedList, target: int) -> None:
 
         current = next_node
 
+    # Extra safety: if list becomes empty
+    if dll.head is None:
+        dll.tail = None
+
 
 def is_train_palindrome(dll: DoublyLinkedList) -> bool:
     left = dll.head
     right = dll.tail
 
-    while left and right and left != right and left.prev != right:
+    while left and right:
         if left.value != right.value:
             return False
+
+        # Stop when pointers meet or cross
+        if left == right or left.next == right:
+            break
+
         left = left.next
         right = right.prev
 
